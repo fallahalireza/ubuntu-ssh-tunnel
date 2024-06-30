@@ -19,7 +19,7 @@ read -p "Please enter the local port you want to use for the SOCKS proxy (defaul
 # Set default local port if not provided by user
 LOCAL_SOCKS_PORT=${LOCAL_SOCKS_PORT:-1080}
 
-# Create systemd service file
+# فایل سرویس systemd را ایجاد می‌کنیم
 sudo tee /etc/systemd/system/ssh-tunnel.service << EOF
 [Unit]
 Description=SSH Tunnel Service
@@ -35,26 +35,27 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF
 
-# Set correct permissions for the service file
+# سطح دسترسی مناسب برای فایل سرویس را تنظیم می‌کنیم
 sudo chmod 644 /etc/systemd/system/ssh-tunnel.service
 
-# Enable and start the service
+# فعال‌سازی و راه‌اندازی سرویس
+sudo systemctl daemon-reload
 sudo systemctl enable ssh-tunnel.service
-sudo systemctl start ssh-tunnel.service
+sudo systemctl restart ssh-tunnel.service
 
-# Check the service status
+# بررسی وضعیت سرویس
 sudo systemctl status ssh-tunnel.service
 
-# Configure proxy settings in /etc/environment
+# تنظیمات پروکسی را در /etc/environment اعمال می‌کنیم
 sudo tee -a /etc/environment << EOF
 export http_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
 export https_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
 EOF
 
-# Apply environment settings
+# تنظیمات محیطی را اعمال می‌کنیم
 source /etc/environment
 
-# Configure proxy for apt
+# پیکربندی پروکسی برای apt
 sudo tee /etc/apt/apt.conf.d/proxy.conf << EOF
 Acquire::http::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
 Acquire::https::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
