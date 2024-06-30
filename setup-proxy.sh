@@ -60,8 +60,4 @@ Acquire::http::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
 Acquire::https::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
 EOF
 
-# Update packages
-sudo apt-get update
-sudo apt-get upgrade -y
-
 echo "Settings applied successfully."
