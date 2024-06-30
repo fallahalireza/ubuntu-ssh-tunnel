@@ -20,24 +20,23 @@ read -p "Please enter the local port you want to use for the SOCKS proxy (defaul
 LOCAL_SOCKS_PORT=${LOCAL_SOCKS_PORT:-1080}
 
 # Create systemd service file
-cat <<EOF | sudo tee /etc/systemd/system/ssh-tunnel.service
+sudo tee /etc/systemd/system/ssh-tunnel.service << EOF
 [Unit]
 Description=SSH Tunnel Service
 After=network.target
 
 [Service]
 User=${LOCAL_USER}
-ExecStart=/usr/bin/expect -c '
-spawn ssh -D ${LOCAL_SOCKS_PORT} -p ${REMOTE_PORT} -N ${REMOTE_USER}@${REMOTE_HOST}
-expect "password:"
-send "${REMOTE_PASS}\r"
-interact'
+ExecStart=/usr/bin/expect -c "spawn ssh -D ${LOCAL_SOCKS_PORT} -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST}; expect \"password:\"; send \"${REMOTE_PASS}\\r\"; interact"
 Restart=always
 RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
 EOF
+
+# Set correct permissions for the service file
+sudo chmod 644 /etc/systemd/system/ssh-tunnel.service
 
 # Enable and start the service
 sudo systemctl enable ssh-tunnel.service
@@ -47,7 +46,7 @@ sudo systemctl start ssh-tunnel.service
 sudo systemctl status ssh-tunnel.service
 
 # Configure proxy settings in /etc/environment
-cat <<EOF | sudo tee -a /etc/environment
+sudo tee -a /etc/environment << EOF
 export http_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
 export https_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
 EOF
@@ -56,9 +55,13 @@ EOF
 source /etc/environment
 
 # Configure proxy for apt
-cat <<EOF | sudo tee /etc/apt/apt.conf.d/proxy.conf
+sudo tee /etc/apt/apt.conf.d/proxy.conf << EOF
 Acquire::http::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
 Acquire::https::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
 EOF
+
+# Update packages
+sudo apt-get update
+sudo apt-get upgrade -y
 
 echo "Settings applied successfully."
