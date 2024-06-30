@@ -1,11 +1,14 @@
 #!/bin/bash
 
 # Get server details from user
+echo "server not access"
+
 read -p "IP Address (server not access): " LOCAL_HOST
 read -p "Port (server not access): " LOCAL_PORT
 read -p "Username (server not access): " LOCAL_USER
 read -p "Password (server not access): " LOCAL_PASS
 echo
+echo "server access"
 read -p "IP Address (server access): " REMOTE_HOST
 read -p "Port (server access): " REMOTE_PORT
 read -p "Username (server access): " REMOTE_USER
