@@ -4,12 +4,12 @@
 read -p "IP Address (server not access): " LOCAL_HOST
 read -p "Port (server not access): " LOCAL_PORT
 read -p "Username (server not access): " LOCAL_USER
-read -s -p "Password (server not access): " LOCAL_PASS
+read -p "Password (server not access): " LOCAL_PASS
 echo
 read -p "IP Address (server access): " REMOTE_HOST
 read -p "Port (server access): " REMOTE_PORT
 read -p "Username (server access): " REMOTE_USER
-read -s -p "Password (server access): " REMOTE_PASS
+read -p "Password (server access): " REMOTE_PASS
 echo
 read -p "Please enter the local port you want to use for the SOCKS proxy (default is 1080): " LOCAL_SOCKS_PORT
 
