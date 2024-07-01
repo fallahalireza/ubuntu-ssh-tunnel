@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get server details from user
-echo "server not access"
+echo "server not access 11"
 
 read -p "IP Address (server not access): " LOCAL_HOST
 read -p "Port (server not access): " LOCAL_PORT
@@ -47,18 +47,14 @@ sudo systemctl restart ssh-tunnel.service
 sudo systemctl status ssh-tunnel.service
 
 # تنظیمات پروکسی را در /etc/environment اعمال می‌کنیم
-sudo tee -a /etc/environment << EOF
-export http_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
-export https_proxy="socks5://localhost:${LOCAL_SOCKS_PORT}"
-EOF
+echo "export http_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | sudo tee -a /etc/environment
+echo "export https_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | sudo tee -a /etc/environment
 
 # تنظیمات محیطی را اعمال می‌کنیم
 source /etc/environment
 
 # پیکربندی پروکسی برای apt
-sudo tee /etc/apt/apt.conf.d/proxy.conf << EOF
-Acquire::http::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
-Acquire::https::Proxy "socks5h://localhost:${LOCAL_SOCKS_PORT}";
-EOF
+echo "Acquire::http::Proxy \"socks5h://localhost:${LOCAL_SOCKS_PORT}\";" | sudo tee /etc/apt/apt.conf.d/proxy.conf
+echo "Acquire::https::Proxy \"socks5h://localhost:${LOCAL_SOCKS_PORT}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf
 
 echo "Settings applied successfully."
