@@ -27,7 +27,7 @@ After=network.target
 
 [Service]
 User=${LOCAL_USER}
-ExecStart=/usr/bin/expect -c "spawn ssh -D ${LOCAL_SOCKS_PORT} -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST}; expect \"password:\"; send \"${REMOTE_PASS}\\r\"; interact"
+ExecStart=/usr/bin/expect -c "spawn ssh -o StrictHostKeyChecking=no -D ${LOCAL_SOCKS_PORT} -p ${REMOTE_PORT} ${REMOTE_USER}@${REMOTE_HOST}; expect \"password:\"; send \"${REMOTE_PASS}\\r\"; interact; sleep 7200"
 Restart=always
 RestartSec=10
 
