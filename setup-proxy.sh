@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Get server details from user
-echo "server not access 11"
+echo "server not access 12"
 
 read -p "IP Address (server not access): " LOCAL_HOST
 read -p "Port (server not access): " LOCAL_PORT
@@ -43,9 +43,6 @@ sudo systemctl daemon-reload
 sudo systemctl enable ssh-tunnel.service
 sudo systemctl restart ssh-tunnel.service
 
-# بررسی وضعیت سرویس
-sudo systemctl status ssh-tunnel.service
-
 # تنظیمات پروکسی را در /etc/environment اعمال می‌کنیم
 echo "export http_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | sudo tee -a /etc/environment
 echo "export https_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | sudo tee -a /etc/environment
@@ -53,8 +50,20 @@ echo "export https_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | sudo tee 
 # تنظیمات محیطی را اعمال می‌کنیم
 source /etc/environment
 
+# تنظیمات پروکسی را در ~/.bashrc و ~/.profile اعمال کنید
+echo "export http_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | tee -a ~/.bashrc ~/.profile
+echo "export https_proxy=\"socks5://localhost:${LOCAL_SOCKS_PORT}\"" | tee -a ~/.bashrc ~/.profile
+
+# پیکربندی پروکسی برای wget
+echo "use_proxy = on" | tee -a ~/.wgetrc
+echo "http_proxy = socks5://localhost:${LOCAL_SOCKS_PORT}" | tee -a ~/.wgetrc
+echo "https_proxy = socks5://localhost:${LOCAL_SOCKS_PORT}" | tee -a ~/.wgetrc
+
 # پیکربندی پروکسی برای apt
 echo "Acquire::http::Proxy \"socks5h://localhost:${LOCAL_SOCKS_PORT}\";" | sudo tee /etc/apt/apt.conf.d/proxy.conf
 echo "Acquire::https::Proxy \"socks5h://localhost:${LOCAL_SOCKS_PORT}\";" | sudo tee -a /etc/apt/apt.conf.d/proxy.conf
 
 echo "Settings applied successfully."
+
+# بررسی وضعیت سرویس
+sudo systemctl status ssh-tunnel.service
