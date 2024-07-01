@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # اطمینان از نصب بودن بسته‌های مورد نیاز
+sudo apt update
 sudo apt install -y expect wget
 
 # Get server details from user
-echo "server not access 13"
+echo "server not access 14"
 
 read -p "IP Address (server not access): " LOCAL_HOST
 read -p "Port (server not access): " LOCAL_PORT
